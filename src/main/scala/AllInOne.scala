@@ -34,11 +34,8 @@ object RNG {
 		else       (i, newRng)
 	}
 
-	def double(rng:RNG):(Double, RNG) = {
-		val (x, r) = biggerThanZero(rng)
-		val d = (x-1).toDouble / Int.MaxValue.toDouble
-		(d,r)
-	}
+	val double:Rand[Double] =
+		map(biggerThanZero)(i => (i-1).toDouble / Int.MaxValue.toDouble)
 
 	def intDouble(rng:RNG):((Int,Double), RNG) = {
 		val (i, rng1) = rng.nextInt
