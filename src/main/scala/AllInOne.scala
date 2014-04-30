@@ -15,6 +15,7 @@ case class State[S, +A](run:S => (A,S)) {
 		flatMap(a => sb.map( f(a,_) ) )
 
 
+
 }
 
 object State {
@@ -22,6 +23,14 @@ object State {
 
 	def prepend[S,A](s:State[S,A], to:State[S, List[A]]):State[S, List[A]] = 
 		s.map2(to){_ :: _}
+
+	def get[S]:State[S,S] = State(s => (s,s))
+	def set[S](s:S):State[S,Unit] = State( _ => ( (), s ) )
+
+	def modify[S](f:S => S):State[S, Unit] =
+		for { s <- get 
+		      _ <- set(f(s))
+		    } yield ()
 
 	//def sequence[S,A](l:List[State[S,A]]):State[S, List[A]] =
 	//	l.foldRight( unit(List.empty[A]) ){ case (s,to) => prepend _ }
