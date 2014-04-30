@@ -68,13 +68,13 @@ object RNG {
 		( (d1,d2,d3), r3 )
 	}
 
-	def ints(count:Int)(rng:RNG):(List[Int],RNG) = 
-		if(count <= 0) (Nil,rng)
-		else {
-			val (i ,r1) = rng.nextInt
-			val (is,r2) = ints( count - 1 )(r1)
-			(i::is, r2)
-		}
+	def prepend[A]( rng:Rand[A], to:Rand[List[A]] ):Rand[List[A]] =
+		map2(rng, to){ _ :: _ }
+
+	def sequence[A](fs:List[Rand[A]]):Rand[List[A]] =
+		fs.foldRight( unit( List.empty[A] ) )( prepend _ )
+
+	def ints(count:Int):Rand[List[Int]] = sequence( List.fill(count)(int) )
 	
 }
 
