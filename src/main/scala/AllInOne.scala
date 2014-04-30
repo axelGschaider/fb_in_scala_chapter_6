@@ -75,6 +75,14 @@ object RNG {
 		fs.foldRight( unit( List.empty[A] ) )( prepend _ )
 
 	def ints(count:Int):Rand[List[Int]] = sequence( List.fill(count)(int) )
+
+	def nonNegativeLessThan(n: Int): Rand[Int] = 
+	 	rng => {
+			val (i, rng2) = nonNegativeInt(rng)
+			val mod = i % n
+			if (i + (n-1) - mod >= 0) (mod, rng2)
+			else nonNegativeLessThan(n)(rng)
+		}
 	
 }
 
