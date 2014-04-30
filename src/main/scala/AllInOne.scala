@@ -46,6 +46,9 @@ object RNG {
 	val double:Rand[Double] =
 		map(biggerThanZero)(i => (i-1).toDouble / Int.MaxValue.toDouble)
 
+	val randIntDouble:Rand[(Int,Double)] = both(int, double)
+	val randDoubleInt:Rand[(Double,Int)] = both(double, int)
+	
 	def intDouble(rng:RNG):((Int,Double), RNG) = {
 		val (i, rng1) = rng.nextInt
 		val (d, rng2) = double(rng1)
