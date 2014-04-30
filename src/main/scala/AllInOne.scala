@@ -18,15 +18,9 @@ object RNG {
 	}
 
 	def double(rng:RNG):(Double, RNG) = {
-		val (x, rng1) = biggerThanZero(rng)
-		val (y, rng2) = biggerThanZero(rng1)
-		val (divisor, dividend) =
-			if(x == y)     (x, x-1)
-			else if(x < y) (y, x)
-			else           (x, y)
-
-		val d = dividend.toDouble / divisor.toDouble
-		(d, rng2)
+		val (x, r) = biggerThanZero(rng)
+		val d = (x-1).toDouble / Int.MaxValue.toDouble
+		(d,r)
 	}
 
 	def intDouble(rng:RNG):((Int,Double), RNG) = {
