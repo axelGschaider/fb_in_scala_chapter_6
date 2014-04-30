@@ -3,7 +3,7 @@ trait RNG {
 	def nextInt:(Int, RNG)
 }
 
-object RngUser {
+object RNG {
 	def nonNegativeInt(rng:RNG):(Int,RNG) = {
 		val (i,newRng) = rng.nextInt
 		val posI = if(i >= 0) i
