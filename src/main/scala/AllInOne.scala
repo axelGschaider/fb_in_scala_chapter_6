@@ -12,17 +12,15 @@ object RNG {
 
 	def unit[A](a:A):Rand[A] =  (a, _)
 
-	def map[A,B](s:Rand[A])(f:A=>B):Rand[B] =
-		rng => {
-			val (a, rng2) = s(rng)
-			(f(a), rng2)
-		}
+	def map[A,B](s:Rand[A])(f:A=>B):Rand[B] = flatMap(s)( f andThen unit )
 
 	def map2[A,B,C](ra:Rand[A], rb:Rand[B])(f:(A,B) => C):Rand[C] = 
+		flatMap(ra){a => map(rb)( f(a,_) ) }
+
+	def flatMap[A,B](f: Rand[A])(g: A => Rand[B]):Rand[B] = 
 		rng => {
-			val (a,rng2) = ra(rng)
-			val (b,rng3) = rb(rng2)
-			( f(a,b), rng3 )
+			val (a, rng1) = f(rng)
+			g(a)(rng1)
 		}
 
 	def both[A,B](ra:Rand[A], rb:Rand[B]):Rand[(A,B)] = map2(ra,rb)((_,_))
@@ -75,12 +73,6 @@ object RNG {
 		fs.foldRight( unit( List.empty[A] ) )( prepend _ )
 
 	def ints(count:Int):Rand[List[Int]] = sequence( List.fill(count)(int) )
-
-	def flatMap[A,B](f: Rand[A])(g: A => Rand[B]):Rand[B] = 
-		rng => {
-			val (a, rng1) = f(rng)
-			g(a)(rng1)
-		}
 
 	def nonNegativeLessThan(n:Int):Rand[Int] = 
 		flatMap(nonNegativeInt){ i => 
