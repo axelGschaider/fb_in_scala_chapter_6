@@ -3,7 +3,24 @@ trait RNG {
 	def nextInt:(Int, RNG)
 }
 
+
 object RNG {
+
+	type Rand[+A] = RNG => (A, RNG)
+
+	val int: Rand[Int] = _.nextInt
+
+	def unit[A](a:A):Rand[A] =  (a, _)
+
+	def map[A,B](s:Rand[A])(f:A=>B):Rand[B] =
+		rng => {
+			val (a, rng2) = s(rng)
+			(f(a), rng2)
+		}
+
+	def nonNegativeEven:Rand[Int] = 
+		map(nonNegativeInt)( i => i - i % 2 )
+	
 	def nonNegativeInt(rng:RNG):(Int,RNG) = {
 		val (i,newRng) = rng.nextInt
 		val posI = if(i >= 0) i
