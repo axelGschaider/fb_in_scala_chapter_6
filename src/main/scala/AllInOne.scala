@@ -14,6 +14,7 @@ case class State[S, +A](run:S => (A,S)) {
 	def map2[B,C]( sb:State[S,B] )(f:(A,B) => C):State[S,C] =
 		flatMap(a => sb.map( f(a,_) ) )
 
+
 }
 
 object State {
@@ -68,7 +69,11 @@ object RNG {
 	def double2:Rand[(Double, Double)] = both(double, double)
 
 	def double3:Rand[(Double, Double, Double)] = 
-		double2.map2( double ){ case ( (a,b), c) => (a,b,c) }
+		for { a <- double 
+              b <- double
+              c <- double
+		    } yield (a,b,c)
+		//double2.map2( double ){ case ( (a,b), c) => (a,b,c) }
 	
 
 	//def sequence[A](fs:List[Rand[A]]):Rand[List[A]] =
