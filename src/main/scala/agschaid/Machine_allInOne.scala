@@ -1,4 +1,5 @@
-import State._
+package agschaid
+import agschaid.State._
 
 sealed trait Input
 case object Coin extends Input
